@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+        form{
+            width: 60%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <h2>Update Details</h2>
+
+    <% for( let i of data ) { %>
+        
+        <form class="form-addDetails" method="post" action="/crud/updateData" >
+            <div class="mb-3">
+                <label for="id" class="form-label">ID</label>
+                <input type="number" value="<%= i.id %>" class="form-control"  name="id" >
+            </div>
+        
+            <div class="mb-3">
+                <label for="Name" class="form-label">Name</label>
+                <input type="text" value="<%= i.Name %>" class="form-control" name="Name">
+            </div>
+        
+            <div class="mb-3">
+                <label for="age" class="form-label">Age</label>
+                <input type="number" class="form-control" value="<%= i.age %>" name="age">
+            </div>
+        
+            <div class="mb-3">
+                <label for="mobileNo" class="form-label">Mobile No</label>
+                <input type="number" class="form-control"  value="<%= i.mobileNo %>"  name="mobileNo">
+            </div>
+        
+            <div class="mb-3">
+                <label for="Place" class="form-label">Place</label>
+                <input type="text" class="form-control" value="<%= i.Place %>" name="Place">
+            </div>
+        
+        
+            <button type="submit" class="btn btn-outline-success">Submit</button>
+        </form>
+
+
+    <% } %>
+    
+</body>
+</html>

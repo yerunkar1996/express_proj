@@ -1,0 +1,294 @@
+db
+show dbs
+
+system db
+admin   40.00 KiB
+config  72.00 KiB
+local   80.00 KiB
+
+use nprdb;
+
+db.createCollection("students")
+show collections;
+
+db.tables.drop()
+db.dropDatabase()
+
+
+CRUD Operations
+CREATE
+db.students.insertOne({
+	studentId: 1,
+	studentName:"Sagar",
+	studentAge:25,
+	studentEmail:"Sagar12@gmail.com"
+})
+
+
+db.students.insertMany([{
+	studentId: 3,
+	studentName:"Rahul",
+	studentAge:20,
+	studentEmail:"Rahul@1gmail.com"
+},
+{
+	studentId: 4,
+	studentName:"Sahil",
+	studentAge:18,
+	studentEmail:"Sahil@gmail.com"
+},
+{
+	studentId: 5,
+	studentName:"rocky",
+	studentAge: 22,
+	studentEmail:"rocky0@gmail.com"
+}])
+
+
+
+READ
+db.students.find();   -- all data
+
+db.students.find({studentName:"rocky"});   -- search data by name
+
+db.students.findOne();   --- first data
+db.students.findOne({studentId: 5});
+
+
+Delete
+db.students.deleteOne({studentId: 5});
+
+Update
+ db.students.updateOne(
+  {studentName: 'Rohidas'},
+  { $set : { studentAge: 25}}
+)
+
+
+db.students.updateMany(
+   {studentAge: 25},
+   {$set:{studentPlace: 'Mumbai'}})
+
+db.students.deleteMany({studentAge: 25})
+
+
+//Conditional Operator
+eq
+ne
+lt
+lte
+gt
+gte
+
+db.students.find({ studentAge: { $lt: 18 }});
+
+db.students.find({ studentAge: { $lte: 18 }});
+
+db.students.find({ studentAge: { $gt: 18 }});
+
+db.students.find({ studentAge: { $gte: 18 }})
+
+db.students.find({ studentAge: { $ne: 18 }});
+
+Logical Operators
+$and   
+$or
+
+db.students.find({
+  $and : [{studentId: 4} ,  {studentAge: 16}]
+})
+
+db.students.find({
+  $or : [{studentId: 4} ,  {studentAge: 18}]
+})
+
+
+Operators
+limit & skip 
+db.students.find().limit(2)
+
+db.students.find().skip(2)
+
+
+db.students.find().limit(2).skip(0)
+
+db.students.find().limit(2).skip(2)
+
+db.students.find().limit(2).skip(4)
+
+db.students.find().limit(2).skip(6)
+
+db.students.find().limit(2).skip(8)
+
+
+Projection
+db.students.find({},{studentId: 0,
+  studentName: 1})
+
+db.students.find({},{studentName: 1, _id:0})
+
+db.students.find({studentAge: 16},{studentName: 1, _id:0})
+
+db.students.find({studentAge: {$gte: 18} },
+{studentName: 1, studentEmail:1, _id:0})
+
+db.students.find({studentAge: {$gte: 18} },
+{studentName: 1, studentEmail:1, _id:0}).limit(2).skip(2).count()
+
+db.students.find({studentAge: {$gte: 18} },
+{studentName: 1, studentEmail:1, _id:0}).count()
+
+db.students.find({},{studentName: 1, studentEmail:1, _id:0}).count()
+
+
+Aggregation
+count match group limit  min max sum
+
+pipeline = [
+	{$group: {_id:"studentName"}},
+]
+db.students.aggregate(pipeline)
+
+
+pipeline = [
+	{$limit: 2}
+]
+db.students.aggregate(pipeline)
+
+
+
+
+
+
+pipeline = [
+  {$group : {_id: "$studentName"}}
+]
+db.students.aggregate(pipeline)
+
+
+db.students.find({},{studentName:1, _id:0})
+
+
+pipeline = [
+  {$group : { _id: "$studentName"}},
+  {$count: "no of ids"}
+]
+db.students.aggregate(pipeline)
+
+
+pipeline = [
+  {$match: {studentName:"Sahil"}},
+  {$group : { _id: "$studentName"}},
+  {$count: "no of ids"}
+]
+db.students.aggregate(pipeline)
+
+
+pipeline = [
+  {$match: {studentName:"Sahil"}}
+]
+db.students.aggregate(pipeline)
+
+
+
+pipeline = [
+  {$match: {studentAge:18}},
+  {$limit: 2}
+]
+db.students.aggregate(pipeline)
+
+
+
+pipeline = [
+  {$match: {studentAge:{$lt:18}}}
+]
+db.students.aggregate(pipeline)
+
+
+
+pipeline = [
+  {$match: { $and : [{studentAge:{$lte:18}}, {studentId: {$gt:6} } ]}}
+]
+db.students.aggregate(pipeline)
+
+
+
+
+
+
+
+1.
+pipeline = [
+  {$limit: 2},
+  {$count: "no of doc"}
+  ]
+db.students.aggregate(pipeline)
+
+
+
+2.
+pipeline = [
+  {$match:{studentAge: {$gte:18} }},
+  {$limit: 2}
+  ]
+db.students.aggregate(pipeline)
+
+
+3.
+group = [
+  {$group: {_id: "$studentAge", "age":{$sum:"$studentAge"}} },
+  {$count: "No of doc"}
+  ]
+db.students.aggregate(group)
+
+
+
+4.
+group = [
+  {$group: {_id: "$place", "age":{$min:"$studentAge"}, 
+"no of doc":{$sum: 1} }}
+  ]
+db.students.aggregate(group)
+
+
+5.
+group = [
+  {$group: {_id: "$place", "age":{$max:"$studentAge"},
+ "no of doc":{$sum: 1} }}
+  ]
+db.students.aggregate(group)
+
+
+
+
+////6. find sum of group 
+group = [
+  {$group: {_id: "$studentAge", "age":{$sum:"$studentAge"}, 
+"total doc in group": {$sum:1} }},
+  ]
+db.students.aggregate(group)
+
+
+7.
+pipeline = [
+  {$sort: {studentName: 1}},
+	{$limit: 2}
+]
+db.students.aggregate(pipeline)
+
+
+sorting
+ASC
+db.students.find().sort({studentName:1})
+
+
+DESC
+db.students.find().sort({studentName:-1})
+
+
+pretty
+db.students.find().pretty()
+
+
+Index
+db.students.ensureIndex({studentName:1})
